@@ -25,11 +25,9 @@ jobs:
                   mkdir -p newman
                   newman run tests/fakeapi.platzi.com.postman_collection.json \
                     -r htmlextra \
-                    --reporter-htmlextra-export newman/report.html \
-                    --suppress-exit-code
+                    --reporter-htmlextra-export newman/report.html
 
-            - name: Upload report
-              uses: actions/upload-artifact@v4
+            - uses: actions/upload-artifact@v4
               if: ${{ !cancelled() }}
               with:
                   name: newman-report
