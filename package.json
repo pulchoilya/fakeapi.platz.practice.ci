@@ -1,0 +1,14 @@
+{
+  "name": "postman-tests",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ilya",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "newman": "^6.2.2"
+  }
+}

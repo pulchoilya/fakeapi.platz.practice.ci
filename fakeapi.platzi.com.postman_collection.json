@@ -1,0 +1,780 @@
+{
+  "info": {
+    "_postman_id": "632eaf63-7f5e-4350-a61a-b7d7552afdf2",
+    "name": "https://fakeapi.platzi.com",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "23216547"
+  },
+  "item": [
+    {
+      "name": "/auth/login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", () => {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Check response is Object\", () => {\r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response).to.be.an('object');\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"john@mail.com\",\r\n  \"password\": \"changeme\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/auth/login",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "/categories",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Each object contains all required keys with values\", () => {\r",
+              "    const categories = pm.response.json();\r",
+              "    const requiredKeys = [\"id\", \"name\", \"slug\", \"image\", \"creationAt\", \"updatedAt\"];\r",
+              "\r",
+              "    categories.forEach((category, index) => {\r",
+              "        requiredKeys.forEach((key) => {\r",
+              "            pm.expect(category, `Object at index ${index} missing key ${key}`)\r",
+              "                .to.have.property(key);\r",
+              "\r",
+              "            pm.expect(\r",
+              "                category[key],\r",
+              "                `Key ${key} in object at index ${index} is null or undefined`\r",
+              "            ).to.not.be.oneOf([null, undefined]);\r",
+              "        });\r",
+              "    });\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Each object has image starting with https\", () => {\r",
+              "    const categories = pm.response.json();\r",
+              "\r",
+              "    for (const category of categories) {\r",
+              "        pm.expect(category).to.have.property(\"image\");\r",
+              "        pm.expect(category.image).to.be.a(\"string\");\r",
+              "        pm.expect(category.image).to.match(/^https/);\r",
+              "    }\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Each object has valid ISO dates\", () => {\r",
+              "    const categories = pm.response.json();\r",
+              "    const isoDateRegex = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$/;\r",
+              "\r",
+              "    for (const category of categories) {\r",
+              "        pm.expect(category.creationAt).to.match(isoDateRegex);\r",
+              "        pm.expect(category.updatedAt).to.match(isoDateRegex);\r",
+              "\r",
+              "        pm.expect(Date.parse(category.creationAt)).to.not.be.NaN;\r",
+              "        pm.expect(Date.parse(category.updatedAt)).to.not.be.NaN;\r",
+              "    }\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/categories",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "categories"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "/products",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Check that response is an array\", () => {\r",
+              "    const categories = pm.response.json();\r",
+              "    pm.expect(categories).to.be.an(\"array\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Description is not empty\", () => {\r",
+              "    const data = pm.response.json();\r",
+              "\r",
+              "    for (const item of data) {\r",
+              "        pm.expect(item.description.trim()).to.not.equal(\"\");\r",
+              "    }\r",
+              "});\r",
+              "\r",
+              "// pm.test(\"There is an object with name Clothes\", () => {\r",
+              "//     pm.expect(pm.response.json().some(item => item.name === \"Clothes\")).to.be.true;\r",
+              "// });"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/products",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "products"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "price=100",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response time is less than 1500ms\", () => {\r",
+              "    pm.response.to.have.property('responseTime').that.is.below(1500);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response is array\", () => {\r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response).to.be.an('array');\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/products/?prise=100",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "products",
+            ""
+          ],
+          "query": [
+            {
+              "key": "prise",
+              "value": "100"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "price=1",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response time is less than 1000ms\", () => {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response is array\", () => { \r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response).to.be.an('array');\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/products/?prise=25",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "products",
+            ""
+          ],
+          "query": [
+            {
+              "key": "prise",
+              "value": "25"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "price_min=900&price_max=1000",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Each product price is between 10 and 50\", () => {\r",
+              "    const products = pm.response.json();\r",
+              "\r",
+              "    for (const product of products) {\r",
+              "        pm.expect(product.price).to.be.within(10, 50);\r",
+              "    }\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Check the status code\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Check the response is Array\", () => {\r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response).to.be.an('array');\r",
+              "});\r",
+              "\r",
+              "pm.test(\"All items in array are objects\", () => {\r",
+              "    const data = pm.response.json();\r",
+              "\r",
+              "    for (const item of data) {\r",
+              "        pm.expect(item).to.be.an(\"object\");\r",
+              "    }\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/products/?price_min=10&price_max=50",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "products",
+            ""
+          ],
+          "query": [
+            {
+              "key": "price_min",
+              "value": "10"
+            },
+            {
+              "key": "price_max",
+              "value": "50"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "categoryId=1",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"All products have category id equal to 1\", () => {\r",
+              "    const data = pm.response.json();\r",
+              "\r",
+              "    for (const item of data) {\r",
+              "        pm.expect(item.category.id).to.equal(1);\r",
+              "    }\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Array contains object with title Classic Comfort Fit Joggers\", () => {\r",
+              "    const data = pm.response.json();\r",
+              "    const product = data.find(item => item.title === \"Classic Comfort Fit Joggers\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/products/?categoryId=1",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "products",
+            ""
+          ],
+          "query": [
+            {
+              "key": "categoryId",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Filter by Title",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// pm.test(\"Contains title\", () => {\r",
+              "//     const data = pm.response.json();\r",
+              "\r",
+              "//     pm.expect(\r",
+              "//         data.some(item => item.title === \"Classic Olive Chino Shorts\")\r",
+              "//     ).to.be.true;\r",
+              "// });\r",
+              "\r",
+              "pm.test(\"Contains slug\", () => {\r",
+              "    const data = pm.response.json();\r",
+              "\r",
+              "    pm.expect(\r",
+              "        data.some(item => item.slug === \"classic-white-crew-neck-t-shirt\")\r",
+              "    ).to.be.true;\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/products/?title=Classic",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "products",
+            ""
+          ],
+          "query": [
+            {
+              "key": "title",
+              "value": "Classic"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "categorySlug=miscellaneous",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", ()=> {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/products/?categorySlug=miscellaneous",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "products",
+            ""
+          ],
+          "query": [
+            {
+              "key": "categorySlug",
+              "value": "miscellaneous"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "users GET",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Contains email\", () => {\r",
+              "    const data = pm.response.json();\r",
+              "\r",
+              "    pm.expect(\r",
+              "        data.some(item => item.email === \"john@mail.com\")\r",
+              "    ).to.be.true;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Contains name\", () => {\r",
+              "    const data = pm.response.json();\r",
+              "\r",
+              "    pm.expect(\r",
+              "        data.some(iteam => iteam.name === \"Jhon\")\r",
+              "    ).to.be.true;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Check the status 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Check response is Array\", () => {\r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response).to.be.an('array');\r",
+              "})"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/users",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create a User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", () => {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Chek the response is Object\", () => {\r",
+              "    const response = pm.response.json();\r",
+              "    pm.expect(response).to.be.an('object');\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Object fields are not empty\", () => {\r",
+              "    const user = pm.response.json();\r",
+              "\r",
+              "    pm.expect(user.id).to.exist;\r",
+              "    pm.expect(user.email).to.not.equal(\"\");\r",
+              "    pm.expect(user.password).to.not.equal(\"\");\r",
+              "    pm.expect(user.name).to.not.equal(\"\");\r",
+              "    pm.expect(user.role).to.not.equal(\"\");\r",
+              "    pm.expect(user.avatar).to.not.equal(\"\");\r",
+              "    pm.expect(user.creationAt).to.not.equal(\"\");\r",
+              "    pm.expect(user.updatedAt).to.not.equal(\"\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Object has all required keys and values are not empty\", () => {\r",
+              "    const user = pm.response.json();\r",
+              "    const requiredKeys = [\r",
+              "        \"id\",\r",
+              "        \"email\",\r",
+              "        \"password\",\r",
+              "        \"name\",\r",
+              "        \"role\",\r",
+              "        \"avatar\",\r",
+              "        \"creationAt\",\r",
+              "        \"updatedAt\"\r",
+              "    ];\r",
+              "\r",
+              "    for (const key of requiredKeys) {\r",
+              "        pm.expect(user).to.have.property(key);\r",
+              "        pm.expect(user[key]).to.not.be.oneOf([null, undefined, \"\"]);\r",
+              "    }\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Nicolas\",\r\n    \"email\": \"nico@gmail.com\",\r\n    \"password\": \"1234\",\r\n    \"avatar\": \"https://picsum.photos/800\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/users/",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Title, Price Range, and Category",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/products/?title=Generic&price_min=1&price_max=1000&categoryId=1",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "products",
+            ""
+          ],
+          "query": [
+            {
+              "key": "title",
+              "value": "Generic"
+            },
+            {
+              "key": "price_min",
+              "value": "1"
+            },
+            {
+              "key": "price_max",
+              "value": "1000"
+            },
+            {
+              "key": "categoryId",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Price Range and Category with Pagination",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.escuelajs.co/api/v1/products/?price_min=900&price_max=1000&categoryId=1&limit=10&offset=10\n",
+          "protocol": "https",
+          "host": [
+            "api",
+            "escuelajs",
+            "co"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "products",
+            ""
+          ],
+          "query": [
+            {
+              "key": "price_min",
+              "value": "900"
+            },
+            {
+              "key": "price_max",
+              "value": "1000"
+            },
+            {
+              "key": "categoryId",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "offset",
+              "value": "10\n"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
