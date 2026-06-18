@@ -1,35 +1,31 @@
 name: Run Newman tests
 
 on:
-    push:
-        branches: [main]
-    pull_request:
-        branches: [main]
     workflow_dispatch:
 
 jobs:
     api-testing:
         timeout-minutes: 2
         runs-on: ubuntu-latest
+
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
-            - uses: actions/setup-node@v4
+            - uses: actions/setup-node@v5
               with:
-                  node-version: '22'
+                  node-version: 22.17.1
 
-            - name: Install dependencies
-              run: npm ci
-
-            - name: Install newman-reporter-htmlextra
-              run: npm install -g newman-reporter-htmlextra
+            - name: Install newman + reporter
+              run: |
+                  npm install -g newman
+                  npm install -g newman-reporter-htmlextra
 
             - name: Run Newman tests
               run: |
-                mkdir -p newman
-                npx newman run tests/fakeapi.platzi.com.postman_collection.json \
-                  -r cli,htmlextra \
-                  --reporter-htmlextra-export newman/report.html
+                  mkdir -p newman
+                  newman run tests/fakeapi.platzi.com.postman_collection.json \
+                    -r htmlextra \
+                    --reporter-htmlextra-export newman/report.html
 
             - uses: actions/upload-artifact@v4
               if: ${{ !cancelled() }}
