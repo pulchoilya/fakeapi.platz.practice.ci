@@ -28,7 +28,7 @@ jobs:
                     --reporter-htmlextra-export newman/report.html \
                     --suppress-exit-code
 
-            - uses: actions/upload-artifact@v4
+            - uses: actions/upload-artifact@v4.6.2
               if: ${{ !cancelled() }}
               with:
                   name: newman-report
