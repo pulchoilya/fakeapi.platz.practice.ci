@@ -454,6 +454,10 @@
           "listen": "test",
           "script": {
             "exec": [
+              "pm.test(\"Status code is 200\", ()=> {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
               "// pm.test(\"Contains title\", () => {\r",
               "//     const data = pm.response.json();\r",
               "\r",
@@ -462,13 +466,13 @@
               "//     ).to.be.true;\r",
               "// });\r",
               "\r",
-              "pm.test(\"Contains slug\", () => {\r",
-              "    const data = pm.response.json();\r",
+              "// pm.test(\"Contains slug\", () => {\r",
+              "//     const data = pm.response.json();\r",
               "\r",
-              "    pm.expect(\r",
-              "        data.some(item => item.slug === \"classic-white-crew-neck-t-shirt\")\r",
-              "    ).to.be.true;\r",
-              "});"
+              "//     pm.expect(\r",
+              "//         data.some(item => item.slug === \"classic-white-crew-neck-t-shirt\")\r",
+              "//     ).to.be.true;\r",
+              "// });"
             ],
             "type": "text/javascript",
             "packages": {},

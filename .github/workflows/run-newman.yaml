@@ -22,8 +22,8 @@ jobs:
 
             - name: Run Newman tests
               run: |
-                  newman run tests/fakeapi.platzi.com.postman_collection.json -r htmlextra
-            - uses: actions/upload-artifact@v4.6.2
+                  newman run tests/fakeapi.platzi.com.postman_collection.json -r htmlextra 
+            - uses: actions/upload-artifact@v4
               if: ${{ !cancelled() }}
               with:
                   name: newman-report
